@@ -1,0 +1,12 @@
+---
+- name: Install mysql-server and php
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - mysql-server
+    - php-fpm
+    - php-mysql
+- name: Import tasks
+  import_tasks:
+    file: extra-play.yml

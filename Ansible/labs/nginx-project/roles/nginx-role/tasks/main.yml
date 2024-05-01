@@ -1,0 +1,13 @@
+---
+- name: update system
+  apt:
+    update_cache : true
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: latest
+  notify:
+    - activate_nginx
+- meta: flush_handlers
+

@@ -1,0 +1,9 @@
+---
+- name: Cloinging repo
+  git:
+    dest: /var/www/repo1
+    repo: https://github.com/elmoatasem112/static-website-example
+    clone: yes
+    update: yes
+
+

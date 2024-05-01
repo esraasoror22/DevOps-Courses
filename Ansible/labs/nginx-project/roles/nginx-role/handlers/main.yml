@@ -1,0 +1,7 @@
+---
+- name: activate_nginx
+  service:
+    name: nginx
+    enabled: true
+    state: started
+

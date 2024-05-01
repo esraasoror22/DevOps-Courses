@@ -1,0 +1,9 @@
+
+Drawbacks
+ ------------>
+1) my_sql_secure_installation -----> script need to be run through ansible
+2) Create tables , ..... for wordpress need to be automated not login to mysql
+3) All shell modules run each time we run playbook we control running of them for files only not for editing on files
+
+4) Installed php8.3-fpm and php8.3-mysql at beginning
+

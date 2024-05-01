@@ -1,0 +1,14 @@
+---
+- name: Create directory
+  file:
+    path: /tmp/meeting
+    state: directory
+  notify:
+    - h2
+- name: Create directory2
+  file:
+    path: /tmp/meeting2
+    state: directory
+  notify:
+    - h2
+

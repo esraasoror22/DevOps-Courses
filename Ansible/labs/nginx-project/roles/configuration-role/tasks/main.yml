@@ -1,0 +1,29 @@
+---
+- name: Install openssl
+  apt:
+    name: openssl
+    state: present
+- name: Create directory for certificate
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+- name: generate ssl certificate
+  shell:  openssl req -x509 -sha256 -nodes -days 365 -subj '/CN=dev.welcome.com' -newkey rsa:2048 -keyout /etc/nginx/ssl/private.key -out /etc/nginx/ssl/certificate.crt
+  run_once: yes
+- name: import tasks
+  import_tasks:
+    file: ./wordpress.yml
+- name: copy configuration for nginx
+  copy:
+    src: /home/nagwa/nginx-project/default-nginx-config 
+    dest: /etc/nginx/sites-available/default
+- name: test nginx configuration
+  shell: nginx -t
+  notify:
+    - restart_nginx
+
+      #- name: restart nginx
+      #service:
+      # name: nginx
+      # state: restarted
+

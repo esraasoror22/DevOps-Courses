@@ -1,0 +1,73 @@
+---
+- name: add packages
+  apt:
+    name: software-properties-common
+    state: present
+
+- name: add repo
+  apt_repository:
+    repo: 'ppa:ondrej/php'
+    state: present
+- name: update cache
+  apt:
+    update_cache: yes
+
+- name: Install php7.4
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - php7.4
+    - php7.4-fpm  
+    - php7.4-mysql 
+    - unzip
+      #loop_control:
+      #loop_var: test
+
+- name: Install wordpress
+  get_url:
+    url: https://wordpress.org/latest.zip
+    dest: /var/www
+- name: extract wordpress files
+  shell: unzip /var/www/wordpress-6.5.2.zip -d /var/www/
+  args:
+    creates: /var/www/wordpress 
+      # This ensures the command only runs if the directory doesn't exist yet
+      #- name: copy wordpress dir from tala home directory to /var/www
+      # copy:
+      # src: wordpress
+      # dest: /var/www/
+      #recurse: yes
+      #- name: rename wordpress config
+      # shell: mv wp-config-sample.php wp-config.php
+
+- name: name rename  wp-config-sample.php 
+  shell: |
+    cd /var/www/wordpress && mv wp-config-sample.php wp-config.php
+  args:
+      creates: /var/www/wordpress/wp-config.php
+        #- name: create database
+        #shell: |
+        #mysql -u root && Create Database wordpress_db;
+        #CREATE USER 'esraa'@'localhost' IDENTIFIED BY '12345';
+        #GRANT ALL PRIVILEGES ON wordpress_db.* TO 'esraa'@'localhost';
+        #exit
+
+
+- name: configure db name and user
+  shell: |
+    cd /var/www/wordpress; sed -i "s/'database_name_here'/'wordpress_db'/g" wp-config.php; sed -i "s/'username_here'/'esraa'/g" wp-config.php;sed -i "s/'password_here'/'12345'/g" wp-config.php
+  args:
+    creates: /var/www/wordpress/wp-config.php
+- name: Create ssl for wordpress website
+  shell:  openssl req -x509 -sha256 -nodes -days 365 -subj '/CN=stage.welcome.com' -newkey rsa:2048 -keyout /etc/nginx/ssl/private2.key -out /etc/nginx/ssl/certificate2.crt
+  args:
+    creates: /etc/nginx/ssl/private2.key
+
+- name: copy nginx configuration
+  copy:
+    src: /home/nagwa/nginx-project/default-nginx-config
+    dest: /etc/nginx/sites-available/default
+  notify:
+    - test_nginx_configuration
+    - restart_nginx

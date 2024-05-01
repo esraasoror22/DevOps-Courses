@@ -1,0 +1,16 @@
+---
+#- tasks:
+- name: create first file
+  file:
+       path: /tmp/orchestrator.txt
+       state: touch
+  notify:
+       - h1
+- meta: flush_handlers
+- name: create directory
+  file:
+       path: /tmp/oill
+       state: directory
+  notify:
+       - h1
+    

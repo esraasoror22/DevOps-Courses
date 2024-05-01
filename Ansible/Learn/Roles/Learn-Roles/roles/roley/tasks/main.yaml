@@ -1,0 +1,12 @@
+---
+- name: Create file1
+  file:
+    path: /tmp/esraa_meta.txt
+    state: touch
+  notify:
+    - h2
+- name: import tasks defined on extra-playbook
+  import_tasks:
+    file: extra-play.yml
+
+
